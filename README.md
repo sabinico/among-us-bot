@@ -1,6 +1,3 @@
-# Among Us - Discord Bot
-Discord.js based Among Us Bot
-
 <div align="center">
   <br />
   <p>
@@ -13,7 +10,6 @@ Discord.js based Among Us Bot
     <a href="https://www.npmjs.com/package/discord.js"><img src="https://img.shields.io/npm/dt/discord.js.svg?maxAge=3600" alt="NPM downloads" /></a>
     <a href="https://github.com/discordjs/discord.js/actions"><img src="https://github.com/discordjs/discord.js/workflows/Testing/badge.svg" alt="Build status" /></a>
     <a href="https://david-dm.org/discordjs/discord.js"><img src="https://img.shields.io/david/discordjs/discord.js.svg?maxAge=3600" alt="Dependencies" /></a>
-    <a href="https://www.patreon.com/discordjs"><img src="https://img.shields.io/badge/donate-patreon-F96854.svg" alt="Patreon" /></a>
   </p>
   <p>
     <a href="https://nodei.co/npm/discord.js/"><img src="https://nodei.co/npm/discord.js.png?downloads=true&stars=true" alt="npm installnfo" /></a>
@@ -47,6 +43,12 @@ custom Game Rooms for an enchanted experience playing the [Among Us](http://www.
 Ignore any warnings about unmet peer dependencies, as they're all optional.
 
 Install dependencies: `yarn install` or `npm install`
+
+Copy contents of `settings.example.json` into new config file: `settings.json`
+
+Modify the config file adding the corresponding ID's specified on [Configuration file](#configuration-file) section.
+
+Copy contents of `memory.example.json` into new memory file: `memory.json`
 
 ### Usage
 
