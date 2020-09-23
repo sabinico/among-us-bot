@@ -1,9 +1,0 @@
-{
-  "moveall": {
-    "enabled": false,
-    "target": null
-  },
-  "gamerooms_ai": 15,
-  "gamerooms": {},
-  "pongs": 5
-}
