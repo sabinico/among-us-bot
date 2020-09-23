@@ -1,0 +1,17 @@
+{
+    "owners": ["<YOUR_DISCORD_USER_ID>"],
+    "administrators": ["<YOUR_DISCORD_USER_ID>"],
+    "token": "<YOUR_DISCORD_BOT_TOKEN>",
+    "prefix": "$",
+    "botMainDiscordServer": "<YOUR_DISCORD_SERVER_ID>",
+    "log_channels": {
+	    "logs": "<CHANNEL_ID>"
+    },
+    "NODE_ENV": "production",
+    "colors": ["Red", "Orange", "Yellow", "Lime", "Green", "Cyan", "Blue", "Purple", "Pink", "Brown", "White", "Black"],
+    "roomscreator": {
+        "enabled": true,
+        "channel": "<CHANNEL_ID>",
+        "category": "<CHANNEL_ID>"
+    }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "among-us-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/sabinico/among-us-bot.git",
+  "author": "Sabinico <sabinico@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^12.3.1",
+    "eslint": "^7.9.0",
+    "fs": "^0.0.1-security",
+    "lodash": "^4.17.20",
+    "moment": "^2.27.0",
+    "nconf": "^0.10.0"
+  }
+}
