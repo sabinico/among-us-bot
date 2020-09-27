@@ -5,5 +5,8 @@
     },
     "gamerooms_ai": 0,
     "gamerooms": {},
-    "pongs": 0
+    "stats": {
+      "gamerooms_created": 0,
+      "pongs": 0
+    }
   }

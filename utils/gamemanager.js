@@ -3,6 +3,7 @@ const { _ } = require('lodash');
 const nconf = require('nconf');
 const Memory = nconf.file('memory.json');
 const settings = require('../settings.json');
+const { StatsManager } = require('./statsmanager');
 
 class GameRoomManager {
 	constructor(_guild) {
@@ -97,6 +98,9 @@ class GameRoomManager {
 		// Init GameRoom
 		await this.initGameRoom(gameroom.id);
 
+		// Increment rooms created statistics
+		StatsManager.increment('gamerooms_created');
+
 		// permissionOverwrites: [
 		// 	{
 		// 		id: _owner.id,
@@ -110,13 +114,13 @@ class GameRoomManager {
 		const config = this.guild.channels.cache.find(_c => _c.id === gameroom.channels.config);
 		const game = this.guild.channels.cache.find(_c => _c.id === gameroom.channels.game);
 		const lobby = this.guild.channels.cache.find(_c => _c.id === gameroom.channels.lobby);
-		lobby.delete();
-		game.delete();
-		config.delete();
-		category.delete();
+		await lobby.delete();
+		await game.delete();
+		await config.delete();
+		await category.delete();
 		Memory.clear('gamerooms:' + _id);
 		Memory.save();
-		if(this.totalGameRooms() == 0) {
+		if(GameRoomManager.totalGameRooms() == 0) {
 			Memory.set('gamerooms_ai', 0);
 			Memory.save();
 		}

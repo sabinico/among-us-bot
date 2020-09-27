@@ -11,6 +11,7 @@ const nconf = require('nconf');
 const Memory = nconf.file('memory.json');
 
 const { GameRoomManager } = require('./utils/gamemanager');
+const { StatsManager } = require('./utils/statsmanager');
 
 // settings.json checks
 if (!settings.owners.length) {
@@ -79,11 +80,7 @@ client.on('message', async msg => {
 
 		// Command: PING
 		if (command === 'ping') {
-			let pongs = Memory.get('pongs');
-			if(pongs === undefined) pongs = 0;
-			pongs++;
-			Memory.set('pongs', pongs);
-			Memory.save();
+			const pongs = StatsManager.increment('pongs');
 			return msg.channel.send('Pong nº' + pongs + '!');
 		}
 
