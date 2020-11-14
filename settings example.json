@@ -13,5 +13,9 @@
         "enabled": true,
         "channel": "<CHANNEL_ID>",
         "category": "<CHANNEL_ID>"
+    },
+    "codereader": {
+        "enabled": true,
+        "channel": "<CHANNEL_ID>"
     }
 }
