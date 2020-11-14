@@ -2,3 +2,4 @@ node_modules
 yarn.lock
 settings.json
 memory.json
+temp

@@ -13,6 +13,8 @@ const Memory = nconf.file('memory.json');
 const { GameRoomManager } = require('./utils/gamemanager');
 const { StatsManager } = require('./utils/statsmanager');
 
+const say = require('say');
+
 // settings.json checks
 if (!settings.owners.length) {
 	console.error('You have to enter at least one owner in the settings.json');
@@ -49,6 +51,35 @@ client.once('ready', () => {
 		});
 	}, updateSeconds * 1000);
 });
+
+// Helpers
+function tts(voiceChannel, text) {
+	if (!fs.existsSync('./temp')) {
+		fs.mkdirSync('./temp');
+	}
+	const timestamp = new Date().getTime();
+	const soundPath = `./temp/${timestamp}.wav`;
+	say.export(text, null, 0.5, soundPath, (err) => {
+		if (err) {
+			console.error(err);
+			return;
+		}
+		else{
+			voiceChannel.join().then((connection) => {
+				connection.play(soundPath).on('end', () => {
+					connection.disconnect();
+					fs.unlinkSync(soundPath);
+				}).on('error', (err) => {
+					console.error(err);
+					connection.disconnect();
+					fs.unlinkSync(soundPath);
+				});
+			}).catch((err) => {
+				console.error(err);
+			});
+		}
+	});
+}
 
 // Events
 fs.readdir('./events/', (err, files) => {
@@ -209,6 +240,16 @@ client.on('message', async msg => {
 		// Command: muteall
 		if(command === 'muteall') {
 
+			const sala_roja = '753653471479332905';
+			if(member === null) {
+				const mute_state = args[0] == 1 ? true : false;
+				const channel = msg.guild.channels.cache.get(sala_roja);
+				channel.members.forEach(async (_member) => {
+					await _member.voice.setMute(mute_state);
+				});
+				return;
+			}
+
 			// Required to be in a voice channel
 			if(member.voice.channelID === undefined) {
 				return msg.reply('Primero tienes que estar dentro de un canal de voz.');
@@ -223,6 +264,14 @@ client.on('message', async msg => {
 			member.voice.channel.members.forEach(async (_member) => {
 				await _member.voice.setMute(mute_state);
 			});
+		}
+
+		if(command === 'say') {
+			// Required to be in a voice channel
+			if(member.voice.channelID === undefined) {
+				return msg.reply('Primero tienes que estar dentro de un canal de voz.');
+			}
+			tts(member.voice.channel, args.join(' '));
 		}
 
 		// Command: VCT

@@ -1,9 +1,12 @@
-const { GameRoomManager } = require('../utils/gamemanager');
-// const { _ } = require('lodash');
 const settings = require('../settings.json');
+const { StatsManager } = require('../utils/statsmanager');
 
 module.exports = {
-	run: async (oldState, newState) => {
+	run: async (message, arguments) => {
+
+		const pongs = StatsManager.increment('pongs');
+		return msg.channel.send('Pong nº' + pongs + '!');
+
 		const guild = newState.guild;
 		const user = newState.member.user;
 
@@ -27,7 +30,7 @@ module.exports = {
 		}
 
 		// Game Creator
-		if(settings.roomscreator.enabled && newState.channel && newState.channel.id === settings.roomscreator.channel) {
+		if(newState.channel && newState.channel.id === settings.roomscreator.channel) {
 			// Check if users is already owner of a room
 			const _oldRoom = _GameRoomManager.getGameRoomByOwner(user);
 			if(_oldRoom !== undefined) {
