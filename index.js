@@ -5,13 +5,14 @@ const settings = require('./settings.json');
 const _ = require('lodash');
 
 const Discord = require('discord.js');
-const client = global.client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
+const client = global.client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'GUILD_PRESENCES'] });
 
 const nconf = require('nconf');
 const Memory = nconf.file('memory.json');
 
 const { GameRoomManager } = require('./utils/gamemanager');
 const { StatsManager } = require('./utils/statsmanager');
+const { CodesManager } = require('./utils/codesmanager');
 
 const say = require('say');
 
@@ -93,6 +94,7 @@ function tts(voiceChannel, text) {
 		}
 	});
 }
+const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 
 // Events
 fs.readdir('./events/', (err, files) => {
@@ -124,43 +126,7 @@ client.on('message', async msg => {
 		// Check for codes (6 chars) && user in-voice
 		if(msg.content.length == 6 && member.voice.channelID !== undefined) {
 			const code = msg.content;
-			const library = {
-				'A': ['Albacete'],
-				'B': ['Barcelona'],
-				'C': ['Casa'],
-				'D': ['Dinamarca'],
-				'E': ['España'],
-				'F': ['Francia', 'Furcia'],
-				'G': ['Gato'],
-				'H': ['Helado'],
-				'I': ['Italia'],
-				'J': ['Jaen'],
-				'K': ['Kilo'],
-				'L': ['Lugo'],
-				'M': ['Madrid'],
-				'N': ['Noruega'],
-				'O': ['Oviedo'],
-				'P': ['Pamplona'],
-				'Q': ['Queso'],
-				'R': ['Roma'],
-				'S': ['Sevilla'],
-				'T': ['Toledo'],
-				'U': ['Ucrania'],
-				'V': ['Valencia'],
-				'W': ['Washington'],
-				'X': ['Xilofono'],
-				'Y': ['Yogurt'],
-				'Z': ['Zapato'],
-			};
-			let frase_completa = '';
-			for (let i = 0; i < code.length; i++) {
-				const letter = code.charAt(i);
-				const city_array = library[letter.toUpperCase()];
-				const city = city_array[Math.floor(Math.random() * city_array.length)];
-				frase_completa += letter + ' de ' + city + '. ';
-			}
-
-			tts(member.voice.channel, frase_completa);
+			CodesManager.generateCodeAnounce(code, member.voice.channel);
 		}
 	}
 
@@ -301,10 +267,14 @@ client.on('message', async msg => {
 			if(command === 'muteall') {
 
 				const sala_roja = '753653471479332905';
-				if(member === null) {
+				if(member === null) { // webhook
 					const mute_state = args[0] == 1 ? true : false;
-					const channel = msg.guild.channels.cache.get(sala_roja);
-					channel.members.forEach(async (_member) => {
+					const emoji = args[1];
+					let gamechannel = msg.guild.channels.cache.find(c => c.name.includes(emoji));
+					if(gamechannel == undefined) {
+						gamechannel = msg.guild.channels.cache.get(sala_roja);
+					}
+					gamechannel.members.forEach(async (_member) => {
 						await _member.voice.setMute(mute_state);
 					});
 					return;
@@ -326,6 +296,38 @@ client.on('message', async msg => {
 				});
 			}
 
+			// Command: supermute
+			if(command === 'supermute') {
+
+				const sala_roja = '753653471479332905';
+				if(member === null) {
+					const mute_state = args[0] == 1 ? true : false;
+					const channel = msg.guild.channels.cache.get(sala_roja);
+					channel.members.forEach(async (_member) => {
+						await _member.voice.setMute(mute_state);
+						await _member.voice.setDeaf(mute_state);
+					});
+					return;
+				}
+
+				// Required to be in a voice channel
+				if(member.voice.channelID === undefined) {
+					return msg.reply('Primero tienes que estar dentro de un canal de voz.');
+				}
+
+				// Argumentos
+				if(args.length !== 1) {
+					return msg.reply('Falta el argumento 1 o 0');
+				}
+				const mute_state = args[0] == 1 ? true : false;
+
+				member.voice.channel.members.forEach(async (_member) => {
+					await _member.voice.setMute(mute_state);
+					await _member.voice.setDeaf(mute_state);
+				});
+			}
+
+			// say command
 			if(command === 'say') {
 				// Required to be in a voice channel
 				if(member.voice.channelID === undefined) {
