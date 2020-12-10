@@ -35,8 +35,8 @@ module.exports = {
 		if(activity.details !== 'Hosting a game') return;
 		// console.log(activity);
 
-		// TESTING
-		if(!CodesManager.exists(party.id)) {
+		// Check user is connected to voice chat and code dont exists
+		if(!CodesManager.exists(party.id) && member.voice.channelID !== undefined) {
 			const data = {
 				'owner': user.id,
 				'party': party.size[0] + '/' + party.size[1],
@@ -45,18 +45,19 @@ module.exports = {
 			CodesManager.set(party.id, data);
 
 			// Send Embed
-			const fields = [
-				{ name: 'Owner', value: `${user}` },
-				{ name: 'Code', value: `${party != null ? party.id : 'NO_CODE'}` },
-			];
-			const embed = new Discord.MessageEmbed()
-				.setColor('#ff8e00')
-				.setTitle('Nueva Partida de ' + activity.name)
-				.setThumbnail(user.avatarURL())
-				.addFields(fields)
-				.setTimestamp()
-				.setFooter('Among Us - ESPAÑA | Buscador de partidas', 'https://cdn.discordapp.com/emojis/750737029096013924.png?v=1');
-			logChannel.send(embed);
+			CodesManager.generateEmbed(party.id, member);
+			// const fields = [
+			// 	{ name: 'Owner', value: `${user}` },
+			// 	{ name: 'Code', value: `${party != null ? party.id : 'NO_CODE'}` },
+			// ];
+			// const embed = new Discord.MessageEmbed()
+			// 	.setColor('#ff8e00')
+			// 	.setTitle('Nueva Partida de ' + activity.name)
+			// 	.setThumbnail(user.avatarURL())
+			// 	.addFields(fields)
+			// 	.setTimestamp()
+			// 	.setFooter('Among Us - ESPAÑA | Buscador de partidas', 'https://cdn.discordapp.com/emojis/750737029096013924.png?v=1');
+			// logChannel.send(embed);
 
 			// Send Audio code
 			if(member.voice.channelID !== undefined) {
